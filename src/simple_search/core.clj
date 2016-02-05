@@ -31,6 +31,32 @@
      :total-weight (reduce + (map :weight included))
      :total-value (reduce + (map :value included))}))
 
+(defn remove-random-choice
+  "Removes a random choice from choices in an instance"
+  [instance]
+  (let [choices ()
+        included (included-items (:items instance) choices)]
+  {:instance instance
+   :choices choices
+   :total-weight (reduce + (map :weight included))
+   :total-value (reduce + (map :value included))}))
+
+(defn find-and-remove-choice
+  "Takes a list of choices and returns the same list with one choice removed randomly."
+  [choices]
+  (let [sum (reduce + choices)
+        newSum sum]
+    (while (= newSum sum)
+      (let [randLoc #(rand-int (count choices))]
+        (newSum (reduce + (assoc choices randLoc 0))
+        )
+      )
+    ))
+    choices
+    )
+
+(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
+
 ;;; It might be cool to write a function that
 ;;; generates weighted proportions of 0's and 1's.
 
@@ -60,7 +86,7 @@
 (time (random-search knapPI_16_20_1000_1 1000000
 ))
 
-(random-search knapPI_16_20_1000_1 1000000)
+(random-search knapPI_16_20_1000_1 10000)
 
 
 
@@ -71,10 +97,14 @@
   "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
   [instance]
   (if (> (instance :total-weight) (:capacity (:instance instance)))
-    "Overweight"
+    (while (> (instance :total-weight) (:capacity (:instance instance)))
+
+      )
     "Underweight"
     )
   )
+
+
 
 (remove-then-random-replace (random-answer knapPI_16_20_1000_1))
 
