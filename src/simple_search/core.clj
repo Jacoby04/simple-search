@@ -34,13 +34,15 @@
 ;;; It might be cool to write a function that
 ;;; generates weighted proportions of 0's and 1's.
 
+
+;;; We modified the score such that answers that are overweight return negative their score.
 (defn score
   "Takes the total-weight of the given answer unless it's over capacity,
    in which case we return 0."
   [answer]
   (if (> (:total-weight answer)
          (:capacity (:instance answer)))
-    0
+    (- 0 (:total-value answer))
     (:total-value answer)))
 
 (defn add-score
@@ -57,3 +59,16 @@
 
 (time (random-search knapPI_16_20_1000_1 1000000
 ))
+
+
+
+;-=-=-=-=-=-=-=- Jacob and Peter's Work Starts Here -=-=-=-=-=-=-=-
+
+
+
+
+
+
+
+
+
