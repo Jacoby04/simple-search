@@ -44,12 +44,11 @@
 (defn find-and-remove-choice
   "Takes a list of choices and returns the same list with one choice removed randomly."
   [choices]
-  (let [sum (reduce + choices)
-        newSum sum]
+  (let [sum (reduce + choices)]
+    (def newSum sum)
     (while (= newSum sum)
       (let [randLoc #(rand-int (count choices))]
-        (newSum (reduce + (assoc choices randLoc 0))
-        )
+        (def newSum (reduce + (assoc (def choicesVector (into [] choices)) randLoc 0)))
       )
     ))
     choices
