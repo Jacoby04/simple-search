@@ -34,7 +34,7 @@
 (defn remove-random-choice
   "Removes a random choice from choices in an instance"
   [instance]
-  (let [choices ()
+  (let [choices (find-and-remove-choice (instance :choices))
         included (included-items (:items instance) choices)]
   {:instance instance
    :choices choices
@@ -44,15 +44,14 @@
 (defn find-and-remove-choice
   "Takes a list of choices and returns the same list with one choice removed randomly."
   [choices]
-  (let [sum (reduce + choices)]
-    (def newSum sum)
-    (while (= newSum sum)
-      (let [randLoc #(rand-int (count choices))]
-        (def newSum (reduce + (assoc (def choicesVector (into [] choices)) randLoc 0)))
+  (def choicesVector (vec choices))
+  (loop [rand #(rand-int (count choicesVector))]
+    (if (= (get choicesVector rand) 1)
+      (lazy-seq (assoc choicesVector rand 0))
+      (recur (#(rand-int (count choicesVector))))
       )
-    ))
-    choices
-    )
+  )
+  )
 
 (find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
