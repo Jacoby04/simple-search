@@ -60,9 +60,24 @@
 (time (random-search knapPI_16_20_1000_1 1000000
 ))
 
+(random-search knapPI_16_20_1000_1 1000000)
+
 
 
 ;-=-=-=-=-=-=-=- Jacob and Peter's Work Starts Here -=-=-=-=-=-=-=-
+(score (random-answer knapPI_16_20_1000_1))
+
+(defn remove-then-random-replace
+  "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
+  [instance]
+  (if (> (instance :total-weight) (:capacity (:instance instance)))
+    "Overweight"
+    "Underweight"
+    )
+  )
+
+(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
+
 
 
 
