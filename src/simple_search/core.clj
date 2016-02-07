@@ -69,10 +69,11 @@
 
 (defn remove-then-random-replace
   "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
-  [instance]
-  (if (> (instance :total-weight) (:capacity (:instance instance)))
-    (while (> (instance :total-weight) (:capacity (:instance instance)))
-
+  [answer]
+  (if (> (answer :total-weight) (:capacity (:instance answer)))
+    (while (> (answer :total-weight) (:capacity (:instance answer)))
+        ;;;(remove-then-random-replace answer)
+        (print "In the loop.")
       )
     "Underweight"
     )
@@ -84,10 +85,11 @@
 
 (defn remove-random-choice
   "Removes a random choice from choices in an instance"
-  [instance]
-  (let [choices (find-and-remove-choice (instance :choices))
-        included (included-items (:items instance) choices)]
-  {:instance instance
+  [answer]
+  (print "Removing random choice.")
+  (let [choices (find-and-remove-choice (answer :choices))
+        included (included-items (:items (:instance answer)) choices)]
+  {:instance (answer :instance)
    :choices choices
    :total-weight (reduce + (map :weight included))
    :total-value (reduce + (map :value included))}))
@@ -104,6 +106,7 @@
       )
   )
   )
+
 
 (find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
