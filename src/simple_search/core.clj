@@ -109,6 +109,8 @@
 
 (remove-random-choice (random-answer knapPI_16_20_1000_1))
 
+(+ 1 0)
+
 
 
 
