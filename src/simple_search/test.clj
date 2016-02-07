@@ -72,7 +72,8 @@
   [answer]
   (if (> (answer :total-weight) (:capacity (:instance answer)))
     (while (> (answer :total-weight) (:capacity (:instance answer)))
-
+        ;;;(remove-then-random-replace answer)
+        (print "In the loop.")
       )
     "Underweight"
     )
@@ -85,6 +86,7 @@
 (defn remove-random-choice
   "Removes a random choice from choices in an instance"
   [answer]
+  (print "Removing random choice.")
   (let [choices (find-and-remove-choice (answer :choices))
         included (included-items (:items (:instance answer)) choices)]
   {:instance (answer :instance)
@@ -104,6 +106,7 @@
       )
   )
   )
+
 
 (find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
