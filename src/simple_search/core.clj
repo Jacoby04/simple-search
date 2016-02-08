@@ -104,7 +104,7 @@
     (remove-then-random-replace (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))
     (reconstruct-answer (answer :instance)
                         (find-and-add-choice
-                         (:choices (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))))
+                         (find-and-remove-choice (answer :choices))))
     )
   )
 
@@ -122,6 +122,7 @@
 (remove-then-random-replace (random-answer knapPI_16_20_1000_1))
 
 ;(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
+;(find-and-add-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
 ;(remove-random-choice (random-answer knapPI_16_20_1000_1))
 
