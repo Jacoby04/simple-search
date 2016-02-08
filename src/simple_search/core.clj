@@ -83,14 +83,12 @@
    :total-value (reduce + (map :value included))}))
 
 
+;; This will be our initial tweak function.
 (defn remove-then-random-replace
   "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
   [answer]
   (if (> (answer :total-weight) (:capacity (:instance answer)))
-    (while (> (answer :total-weight) (:capacity (:instance answer)))
-        ;;;(remove-then-random-replace answer)
-        (print "In the loop.")
-      )
+    (remove-then-random-replace (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))
     "Underweight"
     )
   )
@@ -106,7 +104,7 @@
 ;(time (random-search knapPI_16_20_1000_1 1000000))
 
 
-;(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
+(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
 
 ;(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
