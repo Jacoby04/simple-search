@@ -57,42 +57,8 @@
          (map add-score
               (repeatedly max-tries #(random-answer instance)))))
 
-(time (random-search knapPI_16_20_1000_1 1000000
-))
-
-(random-search knapPI_16_20_1000_1 10000)
-
-
 
 ;-=-=-=-=-=-=-=- Jacob and Peter's Work Starts Here -=-=-=-=-=-=-=-
-(score (random-answer knapPI_16_20_1000_1))
-
-(defn remove-then-random-replace
-  "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
-  [answer]
-  (if (> (answer :total-weight) (:capacity (:instance answer)))
-    (while (> (answer :total-weight) (:capacity (:instance answer)))
-        ;;;(remove-then-random-replace answer)
-        (print "In the loop.")
-      )
-    "Underweight"
-    )
-  )
-
-
-
-(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
-
-(defn remove-random-choice
-  "Removes a random choice from choices in an instance"
-  [answer]
-  (print "Removing random choice.")
-  (let [choices (find-and-remove-choice (answer :choices))
-        included (included-items (:items (:instance answer)) choices)]
-  {:instance (answer :instance)
-   :choices choices
-   :total-weight (reduce + (map :weight included))
-   :total-value (reduce + (map :value included))}))
 
 
 (defn find-and-remove-choice
@@ -108,9 +74,48 @@
   )
 
 
-(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
+(defn remove-random-choice
+  "Removes a random choice from choices in an instance"
+  [answer]
+  (print "Removing random choice.")
+  (let [choices (find-and-remove-choice (answer :choices))
+        included (included-items (:items (:instance answer)) choices)]
+  {:instance (answer :instance)
+   :choices choices
+   :total-weight (reduce + (map :weight included))
+   :total-value (reduce + (map :value included))}))
 
-(remove-random-choice (random-answer knapPI_16_20_1000_1))
+
+(defn remove-then-random-replace
+  "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
+  [answer]
+  (if (> (answer :total-weight) (:capacity (:instance answer)))
+    (while (> (answer :total-weight) (:capacity (:instance answer)))
+        ;;;(remove-then-random-replace answer)
+        (print "In the loop.")
+      )
+    "Underweight"
+    )
+  )
+
+
+
+;;; -=-=--=-=-=-=-=- Evaluation Station -=-=-=-=-=-
+
+;(score (random-answer knapPI_16_20_1000_1))
+
+;(random-search knapPI_16_20_1000_1 10000)
+
+;(time (random-search knapPI_16_20_1000_1 1000000))
+
+
+;(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
+
+;(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
+
+;(remove-random-choice (random-answer knapPI_16_20_1000_1))
+
+
 
 
 
