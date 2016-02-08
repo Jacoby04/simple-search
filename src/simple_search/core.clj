@@ -45,6 +45,7 @@
     (- 0 (:total-value answer))
     (:total-value answer)))
 
+
 (defn add-score
   "Computes the score of an answer and inserts a new :score field
    to the given answer, returning the augmented answer."
@@ -108,10 +109,17 @@
     )
   )
 
+
+; Need to make sure score is used.
 (defn hill-climb-racing
   "Start with a random answer for an instance, apply tweak-function tweak-times until done."
   [instance tweak-function tweak-times]
-  (def initial (random-answer instance))
+  (def initial (add-score (random-answer instance)))
+  ; Make a function to return a copy of initial
+  ; Call Tweak on initial
+  ; Score the result
+  ; If the resulting score is better than in the original, make it the new original.
+  ; Proceed to tweak original again.
   )
 
 
@@ -131,6 +139,8 @@
 ;(find-and-add-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 
 ;(remove-random-choice (random-answer knapPI_16_20_1000_1))
+
+;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 5)
 
 
 
