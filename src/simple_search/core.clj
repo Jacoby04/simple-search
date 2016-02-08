@@ -108,6 +108,12 @@
     )
   )
 
+(defn hill-climb-racing
+  "Start with a random answer for an instance, apply tweak-function tweak-times until done."
+  [instance tweak-function tweak-times]
+  (def initial (random-answer instance))
+  )
+
 
 
 ;;; -=-=--=-=-=-=-=- Evaluation Station -=-=-=-=-=-
@@ -119,7 +125,7 @@
 ;(time (random-search knapPI_16_20_1000_1 1000000))
 
 
-(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
+;(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
 
 ;(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
 ;(find-and-add-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
