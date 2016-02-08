@@ -73,6 +73,19 @@
   ))
 
 
+;; If time allows, combine this and find-and-remove-choice.
+(defn find-and-add-choice
+  "Takes a list of choices and returns the same list with one choice added randomly."
+  [choices]
+  (def choicesVector (vec choices))
+  (loop [rand #(rand-int (count choicesVector))]
+    (if (= (get choicesVector rand) 0)
+      (reverse (into '() (assoc choicesVector rand 1)))
+      (recur (#(rand-int (count choicesVector))))
+      )
+  ))
+
+
 (defn reconstruct-answer
   "takes an instance and a set list of choices and returns the new answer."
   [instance choices]
@@ -89,7 +102,9 @@
   [answer]
   (if (> (answer :total-weight) (:capacity (:instance answer)))
     (remove-then-random-replace (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))
-    "Underweight"
+    (reconstruct-answer (answer :instance)
+                        (find-and-add-choice
+                         (:choices (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))))
     )
   )
 
