@@ -70,17 +70,14 @@
       (reverse (into '() (assoc choicesVector rand 0)))
       (recur (#(rand-int (count choicesVector))))
       )
-  )
-  )
+  ))
 
 
-(defn remove-random-choice
-  "Removes a random choice from choices in an instance"
-  [answer]
-  (print "Removing random choice.")
-  (let [choices (find-and-remove-choice (answer :choices))
-        included (included-items (:items (:instance answer)) choices)]
-  {:instance (answer :instance)
+(defn reconstruct-answer
+  "takes an instance and a set list of choices and returns the new answer."
+  [instance choices]
+  (let [included (included-items (instance :items) choices)]
+  {:instance instance
    :choices choices
    :total-weight (reduce + (map :weight included))
    :total-value (reduce + (map :value included))}))
