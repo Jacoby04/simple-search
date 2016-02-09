@@ -61,3 +61,10 @@ Here are a few things that could be done in the future to improve on our inital 
   - Args: instance, tweak-function, tweak-times
   - Returns: answer (with score)
 
+### The Results:
+
+We compared the performance of our hill-climbing algorithm to the random-search algorithm made in class. Hill-climb did 10,000 tweaks, and random-search did 10,000 attempts. The results are as follows:
+- Problem:
+  - hill-climb:
+  - random-search:
+
