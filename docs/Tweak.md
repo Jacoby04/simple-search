@@ -24,4 +24,14 @@ Other Notes:
 ### The Why:
 
 Our hill-climbing algorithm is fairly simple. One reason for this choice is Jacob is entirely new to Clojure (and hasn't touched Racket in a long time)
-and Peter has limited experience with it as well.
+and Peter has limited experience with it as well. Basically, we went along with what Nic said about having
+simple working is better than having perfection broken (or something along those lines).
+
+We designed the algorithm to build off directly from where we left off with our random-answer algorithm.
+That is, we stuck with a completely random answer as our initial answer. We debated modifying random-answer since answers seem
+to frequently be overweight, but in the end, we decided to handle that through the hill-climbing rather than by modifying the
+random algorithm. Thus, we have the reason for us deciding to check for answers being overweight in the tweak function; we 
+wanted to get answers to a reasonable level (a weight that is close to max but passes). Once answers are there, items can be randomly removed and added to see if a hill can be climbed to a better random answer. We felt this simple tweak, when used
+within an overall hill-climb algorithm, should move solutions to local optima at the very least.
+
+### The Future:
