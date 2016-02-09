@@ -20,6 +20,7 @@ Other Notes:
 - By an answer, we mean the same general structure that we used in class when creating the random solution algorithm.
 - This algorithm can return answers that are overweight. As a result, it is necessary to score answers when comparing in the overall hill-climbing algorithm.
   - We modified the scoring function from class to return the negative of the actual value if an answer is overweight rather than 0.
+- Our tweak works entirely by modifying the list of choices. As such, we wrote a helper function to rebuild an answer for the given instance with a new set of choices.
   
 ### The Why:
 
