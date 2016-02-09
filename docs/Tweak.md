@@ -35,3 +35,10 @@ wanted to get answers to a reasonable level (a weight that is close to max but p
 within an overall hill-climb algorithm, should move solutions to local optima at the very least.
 
 ### The Future:
+
+Here are a few things that could be done in the future to improve on our inital hill-climb attempt:
+- Random restarts are a must! Without them, it is clear our algorithm will get stuck at local optima. This can be seen by running the algorithm (the overall hill-climbing algorithm using the tweak function) repeatedly and watching the the final score shift around to a few distinct answers.
+- While *very* unlikely, it would  be good to modify our remove and add choice functions (find-and-remove-choice and find-and-add-choice) such that they never lead to infinite loops. You know, just a good rule-of-thumb.
+  - These two functions could also be combined into one as their logic is almost identical. Not sure if it's better practice to have them separate or together in a functional language?
+- If random were to output an initial answer that has a weight significantly under the total-capacity (significantly under meaning the swapping of single items will not get the answer close to the capacacity), then our tweak function won't ever climb hills in any significant way. It could have some improvements, but it can't actually climb upward. In other words, the current algorithm is good for going down from being overweight and then hovering about the max capacity. However, it would not work to start way below the capacity and work upward. This may need to be changed (or, it could be totally alright assuming random really will always be overweight).
+  - An alternative to modifying tweak would be to go back to random and make it more likely that random answers will be overweight by putting in a higher proportion of 1s into choices.
