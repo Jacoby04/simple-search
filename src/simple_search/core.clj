@@ -2,6 +2,8 @@
   (:use simple-search.knapsack-examples.knapPI_11_20_1000
         simple-search.knapsack-examples.knapPI_13_20_1000
         simple-search.knapsack-examples.knapPI_16_20_1000
+        simple-search.knapsack-examples.knapPI_11_1000_1000
+        simple-search.knapsack-examples.knapPI_13_1000_1000
         simple-search.knapsack-examples.knapPI_16_1000_1000))
 
 ;;; An answer will be a map with (at least) four entries:
@@ -154,9 +156,19 @@
 
 ;(remove-random-choice (random-answer knapPI_16_20_1000_1))
 
-;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 10000)
-;(hill-climb-racing knapPI_16_1000_1000_1 remove-then-random-replace 10000)
-;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_11_20_1000_4 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_13_20_1000_4 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_16_20_1000_4 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_11_1000_1000_4 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_13_1000_1000_4 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_16_1000_1000_4 remove-then-random-replace 10000)
+
+;(random-search knapPI_11_20_1000_4 10000)
+;(random-search knapPI_13_20_1000_4 10000)
+;(random-search knapPI_16_20_1000_4 10000)
+;(random-search knapPI_11_1000_1000_4 10000)
+;(random-search knapPI_13_1000_1000_4 10000)
+;(random-search knapPI_16_1000_1000_4 10000)
 
 
 
