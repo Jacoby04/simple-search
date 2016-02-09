@@ -171,6 +171,12 @@
 ;(random-search knapPI_16_1000_1000_4 10000)
 
 
+;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_13_20_1000_1 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 10000)
+
+
+
 
 
 
