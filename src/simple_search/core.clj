@@ -110,16 +110,29 @@
   )
 
 
-; Need to make sure score is used.
+
+; Make a function to return a copy of initial
+; Call Tweak on copy of initial
+; Score the result
+; If the resulting score is better than in the original, make it the new original.
+; Proceed to tweak original again.
 (defn hill-climb-racing
   "Start with a random answer for an instance, apply tweak-function tweak-times until done."
   [instance tweak-function tweak-times]
   (def initial (add-score (random-answer instance)))
-  ; Make a function to return a copy of initial
-  ; Call Tweak on initial
-  ; Score the result
-  ; If the resulting score is better than in the original, make it the new original.
-  ; Proceed to tweak original again.
+  (loop [times-left tweak-times
+         answer initial]
+	  (def tweaked (score (tweak-function answer)))
+	  (if (> (answer :score) (tweaked :score))
+		  (if (> times-left 0)
+			  (recur (dec times-left) answer)
+			  answer
+		  )
+		  (if (> times-left 0)
+			  (recur (dec times-left) tweaked)
+			  tweaked
+		  )
+	  ))
   )
 
 
@@ -140,7 +153,7 @@
 
 ;(remove-random-choice (random-answer knapPI_16_20_1000_1))
 
-;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 5)
+(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 5)
 
 
 
