@@ -1,7 +1,8 @@
 (ns simple-search.core
   (:use simple-search.knapsack-examples.knapPI_11_20_1000
         simple-search.knapsack-examples.knapPI_13_20_1000
-        simple-search.knapsack-examples.knapPI_16_20_1000))
+        simple-search.knapsack-examples.knapPI_16_20_1000
+        simple-search.knapsack-examples.knapPI_16_1000_1000))
 
 ;;; An answer will be a map with (at least) four entries:
 ;;;   * :instance
@@ -122,7 +123,7 @@
   (def initial (add-score (random-answer instance)))
   (loop [times-left tweak-times
          answer initial]
-	  (def tweaked (score (tweak-function answer)))
+	  (def tweaked (add-score (tweak-function answer)))
 	  (if (> (answer :score) (tweaked :score))
 		  (if (> times-left 0)
 			  (recur (dec times-left) answer)
@@ -153,7 +154,9 @@
 
 ;(remove-random-choice (random-answer knapPI_16_20_1000_1))
 
-(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 5)
+;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_16_1000_1000_1 remove-then-random-replace 10000)
+;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
 
 
 
