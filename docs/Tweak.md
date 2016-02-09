@@ -4,7 +4,7 @@ CSci 4553 - Hill-Climb Exercise
 
 ## Tweak
 
-### The Algorithm
+### The Algorithm:
 
 Our tweak algorithm operates as follows:
 - Name: remove-then-random-replace
@@ -43,3 +43,21 @@ Here are a few things that could be done in the future to improve on our inital 
   - These two functions could also be combined into one as their logic is almost identical. Not sure if it's better practice to have them separate or together in a functional language?
 - If random were to output an initial answer that has a weight significantly under the total-capacity (significantly under meaning the swapping of single items will not get the answer close to the capacacity), then our tweak function won't ever climb hills in any significant way. It could have some improvements, but it can't actually climb upward. In other words, the current algorithm is good for going down from being overweight and then hovering about the max capacity. However, it would not work to start way below the capacity and work upward. This may need to be changed (or, it could be totally alright assuming random really will always be overweight).
   - An alternative to modifying tweak would be to go back to random and make it more likely that random answers will be overweight by putting in a higher proportion of 1s into choices.
+
+## Hill-Climbing
+
+### Functions Involved:
+- find-and-remove-choice: Removes a random element from a list of choices. (Changes a random 1 to a 0)
+  - Args: Choices (as a list)
+  - Returns: Choices (as a list)
+- find-and-add-choice: Adds a random element to a list of choices. (Changes a random 0 to a 1)
+  - Args: Choices (as a list)
+  - Returns: Choices (as a list)
+- reconstruct-answer: Constructs a new answer for an instance and list of choices.
+  - Args: instance, choices
+  - Returns: answer (no score)
+- remove-then-random-replace: The tweak function. See above.
+- hill-climb-racing: Our hill-climb algorithm. Tweaks a random answer a specified number of times and returns the best result out of all the tweak attempts.
+  - Args: instance, tweak-function, tweak-times
+  - Returns: answer (with score)
+
