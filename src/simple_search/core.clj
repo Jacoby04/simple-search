@@ -102,7 +102,7 @@
 
 ;; This will be our initial tweak function.
 (defn remove-then-random-replace
-  "Takes an instance. If the instance is over capacity, removes items until it is not. If it is not, removes a random and add a random."
+  "Takes an answer. If the answer is over capacity, removes items until it is not. If it is not, removes a random and add a random."
   [answer]
   (if (> (answer :total-weight) (:capacity (:instance answer)))
     (remove-then-random-replace (reconstruct-answer (answer :instance) (find-and-remove-choice (answer :choices))))
@@ -138,24 +138,34 @@
 	  ))
   )
 
+(defn hill-random-restarts
+  "Make a random answer and tweak it. After so long, randomly generate a
+  new solution and tweak it and see if it's better than the best"
+  [instance tweak-times restart-times]
+  (loop [times-left restart-times
+         answer {:score -1}]
+	  (def climbed (hill-climb-racing instance remove-then-random-replace tweak-times))
+	  (if (> (answer :score) (climbed :score))
+		  (if (> times-left 0)
+			  (recur (dec times-left) answer)
+			  answer
+		  )
+		  (if (> times-left 0)
+			  (recur (dec times-left) climbed)
+			  climbed
+		  )
+	  ))
+  )
+
+
 
 
 ;;; -=-=--=-=-=-=-=- Evaluation Station -=-=-=-=-=-
 
-;(score (random-answer knapPI_16_20_1000_1))
+;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
+;(hill-random-restarts knapPI_11_20_1000_1 10000 10)
 
-;(random-search knapPI_16_20_1000_1 10000)
-
-;(time (random-search knapPI_16_20_1000_1 1000000))
-
-
-;(remove-then-random-replace (random-answer knapPI_16_20_1000_1))
-
-;(find-and-remove-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
-;(find-and-add-choice '(0 1 0 0 0 0 1 0 0 0 0 0 1))
-
-;(remove-random-choice (random-answer knapPI_16_20_1000_1))
-
+;; -=-=-=- Testing our own various algorithms. -=-=-=-=-=-
 ;(hill-climb-racing knapPI_11_20_1000_4 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_13_20_1000_4 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_16_20_1000_4 remove-then-random-replace 10000)
@@ -170,7 +180,7 @@
 ;(random-search knapPI_13_1000_1000_4 10000)
 ;(random-search knapPI_16_1000_1000_4 10000)
 
-
+;; -=-=-=--=- Testing against Molly's -=-=-=-=-=-=-
 ;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_13_20_1000_1 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_16_20_1000_1 remove-then-random-replace 10000)
