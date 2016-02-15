@@ -49,6 +49,8 @@
 
   lein run -m simple-search.experiment 30 1000
 
+  To get lein, cd /bin, ls | grep lein, run the installer, run lein.
+
   where you replace 30 and 1000 with the desired number of repetitions
   and maximum answers.
   "
