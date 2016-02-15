@@ -121,7 +121,7 @@
 ; Proceed to tweak original again.
 (defn hill-climb-racing
   "Start with a random answer for an instance, apply tweak-function tweak-times until done."
-  [instance tweak-function tweak-times]
+  [tweak-function instance tweak-times]
   (def initial (add-score (random-answer instance)))
   (loop [times-left tweak-times
          answer initial]
@@ -138,13 +138,15 @@
 	  ))
   )
 
+
+;; To match up with Nic's data-gatherer, modified the function to do 30 random restarts.
 (defn hill-random-restarts
   "Make a random answer and tweak it. After so long, randomly generate a
   new solution and tweak it and see if it's better than the best"
-  [instance tweak-times restart-times]
-  (loop [times-left restart-times
+  [instance tweak-times]
+  (loop [times-left 30
          answer {:score -1}]
-	  (def climbed (hill-climb-racing instance remove-then-random-replace tweak-times))
+	  (def climbed (hill-climb-racing remove-then-random-replace instance tweak-times))
 	  (if (> (answer :score) (climbed :score))
 		  (if (> times-left 0)
 			  (recur (dec times-left) answer)
@@ -162,6 +164,8 @@
 
 ;;; -=-=--=-=-=-=-=- Evaluation Station -=-=-=-=-=-
 
+
+;!!!!!!!!!!!!!!!!!!!!!THESE ARE NO LONGER CORRECT CALLS!!!!!!!!!!!!!!!
 ;(hill-climb-racing knapPI_11_20_1000_1 remove-then-random-replace 10000)
 ;(hill-random-restarts knapPI_11_20_1000_1 10000 10)
 
@@ -195,6 +199,7 @@
 ;(hill-random-restarts knapPI_11_20_1000_1 5000 10)
 ;(hill-random-restarts knapPI_13_20_1000_1 5000 10)
 ;(hill-random-restarts knapPI_16_20_1000_1 5000 10)
+;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!END!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
