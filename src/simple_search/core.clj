@@ -144,7 +144,7 @@
   "Make a random answer and tweak it. After so long, randomly generate a
   new solution and tweak it and see if it's better than the best"
   [instance tweak-times]
-  (loop [times-left 30
+  (loop [times-left 10
          answer {:score -1}]
 	  (def climbed (hill-climb-racing remove-then-random-replace instance tweak-times))
 	  (if (> (answer :score) (climbed :score))
@@ -170,7 +170,7 @@
 ;(hill-random-restarts knapPI_11_20_1000_1 10000 10)
 
 ;; -=-=-=- Testing our own various algorithms. -=-=-=-=-=-
-;(hill-climb-racing knapPI_11_20_1000_4 remove-then-random-replace 10000)
+;*(hill-climb-racing remove-then-random-replace knapPI_11_20_1000_4  10000)
 ;(hill-climb-racing knapPI_13_20_1000_4 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_16_20_1000_4 remove-then-random-replace 10000)
 ;(hill-climb-racing knapPI_11_1000_1000_4 remove-then-random-replace 10000)
@@ -184,7 +184,7 @@
 ;(random-search knapPI_13_1000_1000_4 10000)
 ;(random-search knapPI_16_1000_1000_4 10000)
 
-;(hill-random-restarts knapPI_11_20_1000_4 5000 10)
+;*(hill-random-restarts knapPI_11_20_1000_4 5000)
 ;(hill-random-restarts knapPI_13_20_1000_4 5000 10)
 ;(hill-random-restarts knapPI_16_20_1000_4 5000 10)
 ;(hill-random-restarts knapPI_11_1000_1000_4 5000 10)
