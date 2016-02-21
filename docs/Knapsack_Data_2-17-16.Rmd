@@ -1,0 +1,257 @@
+---
+title: "Knapsack_Data"
+author: "Jacob Opdahl, Peter Hanson"
+date: "2/17/2016"
+output: pdf_document
+---
+
+# Jacob and Peter's Grand Data Adventure
+
+For our data, we tested 7 different problem instances:
+
+* "knapPI_11_20_1000_4" 
+* "knapPI_13_20_1000_4" 
+* "knapPI_16_20_1000_4"
+* "knapPI_11_1000_1000_4" 
+* "knapPI_13_1000_1000_4" 
+* "knapPI_16_1000_1000_4"
+* "knapPI_16_1000_1000_3"
+
+These were all tested across our 3 different algorithms:
+
+* Random Search
+* Hill Climb
+* Hill Climb with Random Restarts
+
+Each was tested 10 times for each problem instance with 1000 tweaks/tries. Thus, 10 runs each x 3 algorithms x 7 instances = 210 total times running searches.
+
+For more details on the algorithms used and design decisions for using them, see documentation within: https://github.com/Jacoby04/simple-search. Since fairly in-depth explorations of our thought processes can be seen there, we will not regurgitate the information here.
+
+```{r}
+# First, we want to import our data.
+allData = read.table(file="10trials1000tweaks.txt",header=TRUE,sep=" ")
+# Check the structure to make sure it was imported properly.
+str(allData)
+# We'll want to use ggplot2.
+library("ggplot2")
+```
+
+## Overall Data with All Problems
+
+```{r}
+# Plot all scores as a function of all search methods.
+plot(allData$Score ~ allData$Search_method, xlab="Searcher", ylab="Score")
+# Like Nic, we have negtives, so let's make a new column without negatives.
+allData$Non_negative_score = ifelse(allData$Score<0,0,allData$Score)
+# Now, we replot.
+plot(allData$Non_negative_score ~ allData$Search_method, xlab="Searcher", ylab="Score")
+```
+
+From this initial look at all problems lumped together for all our algorithms, it seems Random Search can't even compare. Since 4 of our 7 problem instances feature 1,000 items, and random-search is almost always over capacity for those, we should take this with a grain of salt. This suggests we should look at the algorithms on a per problem basis. 
+
+```{r}
+# Before we start looking at individual problem instances, check out if any are significantly better.
+pairwise.wilcox.test(allData$Non_negative_score, allData$Search_method)
+```
+
+Just for kicks, we'll check out the Wilcox test. We can see from this that both of our Hill Climb algorithms are significantly better than the Random Search algorithm when considering all the problems together. Additionally, Hill Climb and Random Restarts are close to having a significant value for being difference. Perhaps with more data, or with various specific problem instances, we could see if there is indeed a significant performance difference between the 2.
+
+```{r}
+# Let's check out a tree of signifcant variables.
+library("rpart")
+rp <- rpart(Non_negative_score ~ Search_method + Problem + Max_evals, data=allData)
+rp
+plot(rp)
+text(rp, use.n = TRUE)
+```
+
+The above tree isn't all too interesting to us. Most of what we already knew is stated obviously here. Random performs poorly for a large number of items. Therefore, the most significant split comes from splitting between 20 items problems and 1000 item problems. Within 1000 item problems, the most significant split is then on the type of search. We were pretty well aware of this fact before looking at this, but confirmation of sanity is al=ways appreciated.
+
+## Data with Subsets of the Problems
+
+**For any portion where we exam problems with 1,000 items, we will remove random-search from consideration. We originally included it, but it never got above 0 (after accounting for negative values), which means it never gave a valid answer. Thus, to make the plots more interesting to view for our 2 Hill Climb algorithms, we will simply disregard Random Search.**
+
+### 20 Item Problems
+
+```{r}
+# This displays the datasets with 20 objects.
+twenty_item_problems = subset(allData, Problem=="knapPI_11_20_1000_4" | Problem=="knapPI_13_20_1000_4" | Problem=="knapPI_16_20_1000_4")
+
+ggplot(twenty_item_problems, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+From this initial plot of all the 20 instance problems, we can see Random Search is nowhere near as hideous as all the data together makes it seem. The overall pattern seems to be that Hill with Random Restarts is slightly better than Hill Climb, which is slightly beeter than Random Search. This is deviated from slightly for the "level" 16 problem (the one on the far right). In this problem, Random Search does have many low values, but in also has the highest 3rd Quartile and max values. All these problems will be looked at again below, but this gives us an idea of what is coming.
+
+### 1000 Item Problems
+
+```{r}
+# This displays the datasets with 1000 objects.
+thousand_item_problems = subset(allData, Problem=="knapPI_11_1000_1000_4" | Problem=="knapPI_13_1000_1000_4" | Problem=="knapPI_16_1000_1000_4" | Problem=="knapPI_16_1000_1000_3")
+# Remove Random Search because it skews the data.
+thousand_item_no_random = subset(thousand_item_problems, Search_method!="random_search")
+
+ggplot(thousand_item_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+This isn't particularly helpful, but it does give us a quick sense the Hill with Random Restarts tends to outperform standard Hill Climb. We will view individual problem instances below.
+
+### knapPI_11_20_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 11, 20 objects and 4 retries.
+twenty_item_eleven = subset(allData, Problem=="knapPI_11_20_1000_4")
+
+ggplot(twenty_item_eleven, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+This plot seems to suggest pretty clearly the order of "bestness" we mentioned when initially looking at the 20 item instances. That is, Hill with Random Restarts > Hill > Random Search. To check this further, consider the Wilcox test below.
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test 
+pairwise.wilcox.test(twenty_item_eleven$Non_negative_score, twenty_item_eleven$Search_method)
+```
+
+From this, we see that both Hill Climbs are in fact better than Random Search. However, it is not significant the Hill Climb with Random Restarts out performs Hill Climb; the P-Value is very close to significant, so more data may make this difference more certain.
+
+### knapPI_13_20_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 13, 20 objects and 4 retries.
+twenty_item_thirteen = subset(allData, Problem=="knapPI_13_20_1000_4")
+
+ggplot(twenty_item_thirteen, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+For this, it seems Random Search was certainly worse than both Hill Climbs. It might be useful to remove that from the data and consider the Hill Climbs alone.
+
+```{r}
+# Removing Random Search.
+twenty_item_thirteen_no_random = subset(twenty_item_thirteen, Search_method!="random_search")
+
+ggplot(twenty_item_thirteen_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+Removing Random Search was fairly useful. Before, it wasn't entirely clear how different the two hill Climb algorithms were. Now we can see that their scores really aren't that far apart, but both are consistently different in those scores. With that in mind, we move on to the Wilcox test.
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(twenty_item_thirteen$Non_negative_score, twenty_item_thirteen$Search_method)
+```
+
+This confirms our initial outlook of how the algorithms perform relative to one another.
+
+### knapPI_16_20_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 16, 20 objects and 4 retries.
+twenty_item_sixteen = subset(allData, Problem=="knapPI_16_20_1000_4")
+
+ggplot(twenty_item_sixteen, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+Finally, we get to what we thought might be the most interesting/different of the 20 problem instances. Here, we see that on average, our algorithms follow the same trend we've been seeing: Hill with Random Restarts > Hill > Random Search. However, Random Search does have the greatest max value as well as the greatest 3rd quartile. Let's take a look
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(twenty_item_sixteen$Non_negative_score, twenty_item_sixteen$Search_method)
+```
+
+This is really interesting. Based on the above test, it is not clear that any algorithm is better than any other. Clearly we can see from the plot some advantages of various ones, but as to whether any are producing results significantly different from one another, it's not certain. Hill Climb with Random Restarts is very close to being significantly better than Hill Climb, so more data might make that difference more clear with this problem. I suspect if we increased the number of random restarts that it performs (the current amount is 10), than it may also become significantly better than standard Hill Climb.
+
+### knapPI_11_1000_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 11, 1000 objects and 4 retries.
+thousand_item_eleven = subset(allData, Problem=="knapPI_11_1000_1000_4")
+# Remove Random Search as mentioned.
+thousand_item_eleven_no_random = subset(thousand_item_eleven,Search_method!="random_search")
+
+ggplot(thousand_item_eleven_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+It's pretty clear that Random Restarts Hill Climb looks better here. Not much else to say. Let's hop to the Wilcox.
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(thousand_item_eleven_no_random$Non_negative_score, thousand_item_eleven_no_random$Search_method)
+```
+
+Yup, that's what we thought.
+
+### knapPI_13_1000_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 13, 1000 objects and 4 retries.
+thousand_item_thirteen = subset(allData, Problem=="knapPI_13_1000_1000_4")
+# Remove Random Search as mentioned.
+thousand_item_thirteen_no_random = subset(thousand_item_thirteen,Search_method!="random_search")
+
+ggplot(thousand_item_thirteen_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+Once again, it looks like random restart is better all around. Although, the difference is not as prominent as the preceding problem. One interesting thing to note is Hill Climb Random Restart has 2 values that seem to act as outliers; they have unusually high scores given the rest of the results for that algorithm. 
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(thousand_item_thirteen_no_random$Non_negative_score, thousand_item_thirteen_no_random$Search_method)
+```
+
+Hill with Random Restarts is still significantly better.
+
+### knapPI_16_1000_1000_4
+
+```{r}
+# This displays the dataset with a difficulty of 16, 1000 objects and 4 retries.
+thousand_item_sixteen = subset(allData, Problem=="knapPI_16_1000_1000_4")
+# Remove Random Search as mentioned.
+thousand_item_sixteen_no_random = subset(thousand_item_sixteen,Search_method!="random_search")
+
+ggplot(thousand_item_sixteen_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+Here, we see Hill with Random Restarts still definitely looks better. Once again though, the difference has become less prominent. Thus, it seems Hill with Random Restarts is probably overall better than Hill Climb Standard, but it outperforms it by less as the problems get "tougher".
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(thousand_item_sixteen_no_random$Non_negative_score, thousand_item_sixteen_no_random$Search_method)
+```
+
+Despite not having the prominence in difference from the plot, Hill with Random Restarts is still significantly better.
+
+### knapPI_16_1000_1000_3 (The McPhee Special)
+
+```{r}
+# This displays the special dataset that Prof. McPhee gave with a difficulty of 16,
+# 1000 objects, and 3 retries.
+McPhee_special = subset(allData, Problem=="knapPI_16_1000_1000_3")
+# Remove Random Search as mentioned.
+McPhee_special_no_random = subset(McPhee_special,Search_method!="random_search")
+
+ggplot(McPhee_special_no_random, aes(Search_method, Non_negative_score)) + geom_boxplot() + facet_grid(. ~ Problem)
+```
+
+This is the problem Nic posted about in Classroom to note that it seems to be a particularly difficult problem to solve well. Yup, we'd have to agree with him on that. First, Random Search tanked all of its results (as expected since this is a 1,000 item problem). For us alone, Hill with Random restarts is better than Standard Hill Climb, but not by nearly as much as the rest of the thousand item problems. We'll check if this difference is significant below with a Wilcox test.
+
+Before that, I want to compare what we got to what Nic got. Nic mentioned that he got a low of 30,021. Our best, which was achieved with Hill Climb with Random Restarts, was no better than 29,000. Granted, Nic performed 25 runs with 10,000 modifications (WAY more than us), but we have a feeling the results wouldn't be a whole lot different if we matched him on that. Basically, we point this out because we want to make it clear that despite our algorithms showing overall improvement to Random Search, we definitely still have room for improvement.
+
+```{r,warning=FALSE}
+### Pairwise Wilcox Test (with Random Search)
+pairwise.wilcox.test(McPhee_special_no_random$Non_negative_score, McPhee_special_no_random$Search_method)
+```
+
+It's close, but Hill with random Restarts still significantly outperforms Hill Climb.
+
+## Conclusions
+
+Here are some of our main, take-away points after examining all our test data:
+
+* Hill Climb with Random Restarts is significantly better than Hill Climb overall. There were a few instances where P-Values didn't confirm this, but more data would almost certianly get us there.
+
+* Both Hill Climbs outperform Random Search for the 1,000 item problems. The Random Search picks too many items initially, whcih leads to it always being overweight, while our Hill Climb algorithms guarantee to never be overweight. 
+
+* For 20 item problems, Hill Climb with Random Restarts (and even Hill Climb) mostly outperforms Random Search. One of the problem instanes, though, proved that this is not and will not always be the case. We theorize that we could make this more true by having Hill with Random Restarts restart more times or perform more tweaks.
+
+* Despite pretty much overall improving Random Search, we can see that our Hill Climb and Hill Climb with Random Restart algorithms still aren't perfect by comparing to Nic's algorithm and his special, challenging problem. Basically, we've got more work to do to master this problem. Weeee!
+
+
+
+
+
+
